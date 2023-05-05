@@ -1,7 +1,8 @@
 import React from 'react'
 import { MdOutlineDone } from 'react-icons/md'
-import { NavLink, Outlet } from 'react-router-dom'
+import { Link, NavLink, Outlet } from 'react-router-dom'
 import { IoCloseCircleSharp } from 'react-icons/io5'
+import { IoMdAdd } from 'react-icons/io'
 
 function ReminderPage() {
     const [currentPill, setCurrentPill] = React.useState(null)
@@ -12,7 +13,7 @@ function ReminderPage() {
             <h1 className='text-3xl font-semibold text-black'>
                 Pill Reminder
             </h1>
-            <div className="p-6 bg-[#EEC269] flex flex-col  mt-3 rounded-2xl">
+            <div className="p-6 py-10 bg-[#EEC269] flex flex-col  mt-3 rounded-2xl">
                 <div className="flex justify-between">
                     <div className="">
                         <h2 className="text-black font-semibold text-xl">Now</h2>
@@ -30,7 +31,12 @@ function ReminderPage() {
                     </div>
                 </div>
             </div>
-            <h2 className='mt-4 mb-2 text-2xl font-semibold text-black'>Upcoming</h2>
+            <div className="flex justify-between items-center">
+                <h2 className='mt-4 mb-2 text-2xl font-semibold text-black'>Upcoming</h2>
+                <Link to="add-reminder">
+                    <button className='bg-gray-800 rounded-xl px-5 py-1 text-white flex justify-between items-center gap-2 t'>Add Reminder <IoMdAdd className='text-white text-xl' /></button>
+                </Link>
+            </div>
             <div className=" flex gap-2">
                 <NavLink to="/" className={({ isActive }) => isActive ? 'text-white p-1 rounded-full bg-black px-2 cursor-pointer' : 'text-black p-1 rounded-full px-2 cursor-pointer'} >
                     <h3 className='' >Today</h3>
@@ -52,7 +58,7 @@ const UpcomingReminder = ({ time, name }) => {
                 <h2 className="text-black font-semibold text-xl">{time}</h2>
                 <p className="text-black">{name}</p>
             </div>
-            <IoCloseCircleSharp className='text-3xl  ' />
+            <IoCloseCircleSharp className='text-3xl cursor-pointer  ' />
 
         </div>
     )
