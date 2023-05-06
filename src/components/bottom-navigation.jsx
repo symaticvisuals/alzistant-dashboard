@@ -1,9 +1,12 @@
 import React from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+
 import { MdOutlineAccessAlarms } from 'react-icons/md'
 import { RiGalleryLine } from 'react-icons/ri'
 import { FiCamera } from 'react-icons/fi'
 import { BsChatRightDots } from 'react-icons/bs'
+import { IoMdLogOut } from "react-icons/io";
+import Cookies from 'js-cookie'
 
 function BottomNavigation() {
 
@@ -29,6 +32,8 @@ function BottomNavigation() {
             route: '/chat'
         }
     ]
+
+    const navigate = useNavigate()
     return (
         <div className=' bottom-0 fixed py-3 px-2 w-screen bg-white'>
             <hr className='mb-2' />
@@ -39,11 +44,18 @@ function BottomNavigation() {
                             {(
                                 { isActive }
                             ) => (<Icon icon={tab.icon} isActive={isActive} />)}
-
                         </NavLink>
                     ))
 
                 }
+                <div className="" onClick={() => {
+                    Cookies.remove('profile');
+                    Cookies.remove('token');
+                    navigate('/login', { replace: true })
+                }}>
+
+                    <Icon icon={<IoMdLogOut className='text-2xl' />} isActive={false} />
+                </div>
             </div>
         </div>
     )

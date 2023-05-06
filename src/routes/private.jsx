@@ -8,9 +8,9 @@ const useAuth = () => {
     const profile = Cookies.get("profile");
 
     if (token && profile) {
-        return false;
-    } else {
         return true;
+    } else {
+        return false;
     }
 };
 
