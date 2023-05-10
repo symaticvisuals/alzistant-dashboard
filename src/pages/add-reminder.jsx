@@ -1,20 +1,43 @@
+import moment from 'moment'
 import React from 'react'
 import { CgRemoveR } from 'react-icons/cg'
 import { useNavigate } from 'react-router-dom'
+import { request } from '../helpers/axios-instance'
 
 
 function AddReminderPage() {
     const [timings, setTimings] = React.useState([''])
+    const [reminder, setReminder] = React.useState({})
+    const [payload, setPayload] = React.useState({})
     const history = useNavigate()
-    const onChangeTiming = (e) => {
-        timings[index] = e.target.value
-        setTimings([...timings])
-    }
+    const onChangeTiming = (e, index) => {
+        const updatedTimings = [...timings];
+        updatedTimings[index] = { time: e.target.value };
+        setTimings(updatedTimings);
+    };
+
     const onAddTiming = () => {
-        setTimings([...timings, ''])
+        setTimings([...timings, { time: '' }]);
+    };
+
+    const onAddReminder = async () => {
+        setPayload({ ...reminder, timings })
+        let response = await request({
+            method: 'POST',
+            url: '/api/reminder',
+            data: { ...reminder, timings }
+        })
+
+        if (response.data.success) {
+            history('/')
+        }
     }
-    const onAddReminder = () => {
-        history('/')
+
+
+
+
+    const handleChange = (e) => {
+        setReminder({ ...reminder, [e.target.name]: e.target.value })
     }
 
     return (
@@ -26,13 +49,18 @@ function AddReminderPage() {
             <div className="mt-5 flex flex-col gap-4">
                 <div className="">
                     <h2 className='text-md font-normal text-black'>Medicine Name</h2>
-                    <input type="text" className='border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1'
-                        placeholder='Paracetamol 121' />
+                    <input type="text" name="medicineName" className='border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1'
+                        placeholder='Paracetamol 121' onChange={handleChange} />
                 </div>
                 <div className="">
                     <h2 className='text-md font-normal text-black'>Dose</h2>
-                    <select name="" id="" className='
-                    border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1'>
+                    <select name="quantity" id="" className='
+                    border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1' onChange={
+                            (e) => {
+                                setReminder({ ...reminder, quantity: e.target.value })
+                            }
+                        }>
+                        <option value="" disabled selected>Select Quantity</option>
                         <option value="0.5">1/2 Pill</option>
                         <option value="1">1 Pill</option>
                         <option value="0.33">1/3 Pill</option>
@@ -40,23 +68,48 @@ function AddReminderPage() {
                     </select>
                 </div>
                 <div className="">
-                    <h2 className='text-md font-normal text-black'>Duration</h2>
-                    <select name="" id="" className='
-                    border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1'>
-                        <option value="Daily">Daily</option>
-                        <option value="Alternative">Alternative</option>
-                        <option value="One-Day">One-Day</option>
+                    <h2 className='text-md font-normal text-black'>Frequency</h2>
+                    <select name="frequency" id="" className='
+                    border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1' onChange={handleChange}>
+                        <option value="" disabled selected>Select Frequency</option>
+                        <option value="daily">Daily</option>
+                        <option value="alternate">Alternative</option>
+                        <option value="one-day">One-Day</option>
                     </select>
+                </div>
+                <div className="">
+                    <h2 className='text-md font-normal text-black'>Start Date</h2>
+                    <input type="date"
+                        name="startDate"
+                        onChange={(e) => {
+                            setReminder({ ...reminder, startDate: moment(e.target.value).format('YYYY-MM-DD') })
+                        }}
+                        className='border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1'
+                    />
+                </div>
+                <div className="">
+                    <h2 className='text-md font-normal text-black'>End Date</h2>
+                    <input type="date"
+                        name="endDate"
+                        onChange={(e) => {
+                            setReminder({ ...reminder, endDate: moment(e.target.value).format('YYYY-MM-DD') })
+                        }}
+                        className='border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1'
+                    />
                 </div>
 
                 <div className="">
                     <h2 className='text-md font-normal text-black'>Timings</h2>
-                    <div className="flex flex-col gap-2 mt-2">
+                    <div className="flex flex-col gap-2 mt-1">
                         {
                             timings.map((timing, index) => (
                                 <div className='flex gap-2 items-center' key={index}>
                                     <input type="time"
-                                        onChange={onChangeTiming}
+                                        onChange={
+                                            (e) => {
+                                                onChangeTiming(e, index)
+                                            }
+                                        }
                                         className='border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1'
                                         placeholder='Paracetamol 121' />
                                     <button

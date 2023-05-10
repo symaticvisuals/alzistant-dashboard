@@ -7,6 +7,7 @@ const client = axios.create({
 
 export const setAuthorizationHeader = () => {
   const token = Cookies.get("token");
+
   if (token) {
     client.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {

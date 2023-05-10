@@ -7,6 +7,7 @@ import LoginGraphic from '../assets/login-vector.png'
 import { BsGoogle } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
 import { AccessTokenContext } from '../layout';
+import { request } from '../helpers/axios-instance';
 
 function SignIn() {
     const navigate = useNavigate()
@@ -25,6 +26,20 @@ function SignIn() {
 
                 Cookies.set("token", response.data.data.token);
                 Cookies.set("profile", JSON.stringify(response.data.data.profile));
+
+                if (response.data.data.profile.role === 'caretaker') {
+
+                    let checkPatientsCount = await request({
+                        method: "GET",
+                        url: "/api/user/find-patients-count",
+                    });
+
+                    if (checkPatientsCount.data.success === false) {
+                        navigate("/add-patient", { replace: true });
+                        return;
+                    }
+                }
+
                 navigate("/", { replace: true });
 
             }

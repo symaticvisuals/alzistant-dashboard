@@ -12,16 +12,17 @@
   "dependencies": {
     "@react-oauth/google": "^0.11.0",
     "@tanstack/react-query": "^4.29.5",
+    "@tanstack/react-query-devtools": "^4.29.6",
     "axios": "^1.4.0",
     "daisyui": "^2.51.6",
     "js-cookie": "^3.0.5",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.1",
+    "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",
     "react-push-notification": "^1.5.3",
-    "react-query": "^3.39.3",
     "react-router-dom": "^6.11.1",
     "react-webcam": "^7.0.1",
     "sort-by": "^1.2.0"
