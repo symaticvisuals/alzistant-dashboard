@@ -16,6 +16,7 @@ function ReminderPage() {
 
     useEffect(() => {
         if (data) {
+            console.log(data?.nowReminders?.length)
             const convertData = data?.nowReminders?.map((item) => {
                 return {
                     ...item,

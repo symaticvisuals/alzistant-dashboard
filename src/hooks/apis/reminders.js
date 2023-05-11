@@ -5,6 +5,7 @@ const fetchAllReminders = async () => {
         method: 'GET',
         url: '/api/reminder'
     })
+    console.log(response.data.data);
     return response.data.data;
 }
 

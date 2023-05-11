@@ -9,7 +9,7 @@ const getBaseURL = () => {
     case "prod":
       return import.meta.env.VITE_BASE_URL_PROD;
     default:
-      return "https://alzistant-api.vercel.app";
+      return "http://localhost:3005";
   }
 };
 
