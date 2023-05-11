@@ -29,10 +29,17 @@ function SignIn() {
 
                 if (response.data.data.profile.role === 'caretaker') {
 
-                    let checkPatientsCount = await request({
-                        method: "GET",
-                        url: "/api/user/find-patients-count",
-                    });
+
+                    let checkPatientsCount = await axios.get(
+                        `${getApiURL()}/api/user/find-patients-count`,
+                        // set the authorization HTTP header
+                        {
+                            headers: {
+                                Authorization: `Bearer ${response.data.data.token}`,
+                            },
+                        }
+                    )
+
 
                     if (checkPatientsCount.data.success === false) {
                         navigate("/add-patient", { replace: true });
