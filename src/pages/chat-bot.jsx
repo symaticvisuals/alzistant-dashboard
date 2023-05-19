@@ -6,7 +6,7 @@ function ChatBotPage() {
     window.scrollTo(0, document.body.scrollHeight);
     return (
         <div className=''>
-            <div className="px-8 py-4 mb-24">
+            {/* <div className="px-8 py-4 mb-24">
                 {
                     Array(30).fill().map((_, index) => (
                         <ChatBubble key={index} message={
@@ -23,6 +23,21 @@ function ChatBotPage() {
                 <button className=''>
                     <IoSend className='text-3xl ml-2' />
                 </button>
+            </div> */}
+            <div style={{ height: "90vh", width: "auto", zIndex: "40", position: "sticky" }}>
+
+                <iframe
+
+                    src={`https://ora.ai/embed/6baff60c-45bd-4b98-82e9-0d89a45c8178`}
+
+                    width="100%"
+
+                    height="100%"
+
+                    style={{ border: "0", borderRadius: "4px" }}
+
+                />
+
             </div>
 
         </div>

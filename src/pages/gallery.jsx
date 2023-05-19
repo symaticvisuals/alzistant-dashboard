@@ -1,5 +1,6 @@
 import React from 'react'
 import { MdAdd } from 'react-icons/md'
+import AdminRenderer from '../components/user-conditional-renderer';
 
 function GalleryPage() {
     const [images, setImages] = React.useState([
@@ -11,11 +12,12 @@ function GalleryPage() {
     ]);
     return (
         <div className="max-w-screen">
-            <div className="fixed bottom-16 z-10 flex justify-center w-full">
+            <AdminRenderer trueComponent={<div className="fixed bottom-16 z-10 flex justify-center w-full">
                 <button
                     className='bg-gray-900 rounded-full px-4 py-4 text-2xl   justify-center text-white mt-4 '
                 ><MdAdd /></button>
-            </div>
+            </div>} falseComponent={null} />
+
             <div className='grid grid-flow-row-dense grid-cols-2 auto-rows-max gap-2'>
                 {
                     images.map((image, index) => (

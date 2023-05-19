@@ -13,7 +13,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <QueryClientProvider client={queryClient}>
       <App />
       {process.env.NODE_ENV === 'local' && <ReactQueryDevtools initialIsOpen={false} />}
-
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </React.StrictMode>,
 )

@@ -29,7 +29,6 @@ function SignIn() {
 
                 if (response.data.data.profile.role === 'caretaker') {
 
-
                     let checkPatientsCount = await axios.get(
                         `${getApiURL()}/api/user/find-patients-count`,
                         // set the authorization HTTP header

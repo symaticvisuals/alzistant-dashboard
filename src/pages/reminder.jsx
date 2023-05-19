@@ -8,6 +8,7 @@ import moment from 'moment'
 import { request } from '../helpers/axios-instance'
 import addNotification from 'react-push-notification';
 import Cookies from 'js-cookie'
+import AdminRenderer from '../components/user-conditional-renderer'
 
 function ReminderPage() {
 
@@ -16,7 +17,6 @@ function ReminderPage() {
 
     useEffect(() => {
         if (data) {
-            console.log(data?.nowReminders?.length)
             const convertData = data?.nowReminders?.map((item) => {
                 return {
                     ...item,
@@ -31,7 +31,6 @@ function ReminderPage() {
 
     useEffect(() => {
         if (data) {
-            console.log(data?.nowReminders?.length)
             if (!Cookies.get('nowRemindersLength')) {
                 Cookies.set('nowRemindersLength', data?.nowReminders?.length)
             }
@@ -42,7 +41,6 @@ function ReminderPage() {
             const currentLength = data?.nowReminders?.length;
 
             if (currentLength > prevLength) {
-                console.log('new reminder added');
                 addNotification({
                     title: `${data?.nowReminders[0]?.medicineName}`,
                     subtitle: `${data?.nowReminders[0].time}`,
@@ -65,7 +63,6 @@ function ReminderPage() {
 
 
     const markReminderAsDone = async (item) => {
-        console.log(item._id, item.timings_id)
         let response = await request({
             method: 'POST',
             url: '/api/reminder/done',
@@ -117,9 +114,10 @@ function ReminderPage() {
 
             <div className="flex justify-between items-center mt-3">
                 <h2 className='mt-4 mb-2 text-2xl font-semibold text-black'>Upcoming</h2>
-                <Link to="add-reminder" className='bg-gray-800 rounded-xl px-5 py-2 text-white flex justify-between items-center gap-2'>
+                <AdminRenderer trueComponent={<Link to="add-reminder" className='bg-gray-800 rounded-xl px-5 py-2 text-white flex justify-between items-center gap-2'>
                     <button className='flex items-center'>Add Reminder <IoMdAdd className='text-white text-xl' /></button>
-                </Link>
+                </Link>} falseComponent={null} />
+
             </div>
             <div className=" flex gap-2 mt-3">
                 <NavLink to="/" className={({ isActive }) => isActive ? 'text-white p-1 rounded-full bg-black px-2 cursor-pointer' : 'text-black p-1 rounded-full px-2 cursor-pointer'} >
@@ -142,7 +140,6 @@ function ReminderPage() {
 const UpcomingReminder = ({ time, name, type = "" }) => {
     return (
         <div className="flex justify-between items-center px-4 py-4 bg-slate-100">
-            {console.log(time)}
             <div className="">
                 <div className="flex gap-3">
 
@@ -180,6 +177,10 @@ const Tomorrow = () => {
     return (
         <div className="mt-4 flex flex-col gap-3 mb-8">
             {
+                data && reminders.length === 0 && "No Medicines for tomorrow"
+            }
+            {
+
                 data && reminders?.map((item, index) => (
                     <UpcomingReminder key={index} time={item?.timings} name={item?.medicineName} />
                 ))}
@@ -202,6 +203,10 @@ const Today = () => {
     return (
         <div className="mt-4 flex flex-col gap-3 mb-8">
             {
+                data && reminders.length === 0 && "No Medicines for today"
+            }
+            {
+
                 data && reminders?.map((item, index) => (
                     <UpcomingReminder key={index} time={item?.timings} name={item?.medicineName} />
                 ))}
@@ -217,7 +222,6 @@ const LateReminder = () => {
 
     React.useEffect(() => {
         if (data) {
-
             setReminders(data?.lateReminders)
         }
     }, [data])
@@ -225,6 +229,10 @@ const LateReminder = () => {
     return (
         <div className="mt-4 flex flex-col gap-3 mb-8">
             {
+                data && reminders.length === 0 && "No Late Medicines"
+            }
+            {
+
                 data && reminders?.map((item, index) => (
                     <UpcomingReminder key={index} time={item?.lateTime} name={item?.medicineName} type={"late"} />
                 ))}

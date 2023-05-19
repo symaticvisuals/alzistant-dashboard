@@ -1,12 +1,12 @@
 import { request } from "../../helpers/axios-instance";
 
-const fetchAllReminders = async () => {
+const fetchAllRelatives = async () => {
     const response = await request({
         method: 'GET',
-        url: '/api/reminder'
+        url: '/api/relative'
     })
 
     return response.data.data;
 }
 
-export { fetchAllReminders };
+export { fetchAllRelatives };

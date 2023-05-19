@@ -6,6 +6,7 @@ import { getApiURL } from '../helpers/baseURL';
 import verifyGraphic from '../assets/verify-otp-vector.png'
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { request } from '../helpers/axios-instance';
 function SignUp() {
   const { accessToken } = useContext(AccessTokenContext);
   const [mobile, setMobile] = useState('');
@@ -13,10 +14,15 @@ function SignUp() {
   const navigate = useNavigate();
   const [showOtpPage, setShowOtpPage] = useState(false);
   const sendOtp = async () => {
+    console.log(getApiURL());
+    console.log("mobile", mobile);
+
     const response = await axios.post(`${getApiURL()}/api/auth/sendOtp`, {
       phoneNumber: mobile,
     });
+
     if (response.data.success) {
+
       setShowOtpPage(true);
     } else {
       alert('Error Sending OTP');
