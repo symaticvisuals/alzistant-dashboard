@@ -24,7 +24,7 @@ function ChatBotPage() {
                     <IoSend className='text-3xl ml-2' />
                 </button>
             </div> */}
-            <div style={{ height: "90vh", width: "auto", zIndex: "40", position: "sticky" }}>
+            <div style={{ height: "87vh", width: "auto", zIndex: "40", position: "sticky" }}>
 
                 <iframe
 
