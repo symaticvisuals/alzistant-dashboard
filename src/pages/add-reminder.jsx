@@ -41,7 +41,7 @@ function AddReminderPage() {
     }
 
     return (
-        <div className='px-6 py-2 bg-[#FAFAFA] mb-14'>
+        <div className='px-6 py-2 bg-[#FAFAFA] mb-32'>
             <div className="py-2"></div>
             <h1 className='text-3xl font-semibold text-black'>
                 Add Reminder
