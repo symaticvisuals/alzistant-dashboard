@@ -81,6 +81,7 @@ const AddRelativeForm = ({ image, showVerify }) => {
     const [relationship, setRelationship] = useState('');
 
     const [verifiedDetails, setVerifiedDetails] = useState(null);
+    const [buttonMessage, setButtonMessage] = useState('Verify');
 
     const handleNameChange = (event) => {
         setName(event.target.value);
@@ -131,8 +132,9 @@ const AddRelativeForm = ({ image, showVerify }) => {
 
         if (response.data.success) {
             setVerifiedDetails(response.data.data);
+            setButtonMessage('Verified');
         } else {
-            alert('Failed to verify relative');
+            setButtonMessage('Not Found')
         }
 
         setLoading(false);
@@ -182,7 +184,7 @@ const AddRelativeForm = ({ image, showVerify }) => {
                                 <div class="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
                             </div>
 
-                        ) : verifiedDetails?.name ? "Verified" : "Verify"}
+                        ) : buttonMessage}
                     </button>
                 )}
             </form>
