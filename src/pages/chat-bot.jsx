@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 import { IoSend } from 'react-icons/io5'
 import { useChats } from '../hooks/get-chats';
 import { request } from '../helpers/axios-instance';
+import Cookies from 'js-cookie';
 
 function ChatBotPage() {
     // also scroll to bottom when new message is added
@@ -9,6 +10,8 @@ function ChatBotPage() {
     const [message, setMessage] = React.useState("");
     const [chats, setChats] = React.useState([]);
     const [showTyping, setShowTyping] = React.useState(false);
+    const profile = JSON.parse(Cookies.get('profile'));
+
     React.useEffect(() => {
         if (data) {
             setChats(data);
@@ -16,21 +19,21 @@ function ChatBotPage() {
     }, [data])
 
     const sendMessage = async () => {
-
-
+        const url = profile.role === 'caretaker' ? '/api/chat/caretaker' : '/api/chat';
+        const type = profile.role === 'caretaker' ? 'caretaker' : 'user';
         setChats([
             ...chats,
             {
                 temp: true,
                 message: message,
-                sender: "user"
+                sender: type
             }
         ]);
         setShowTyping(true);
 
         const response = await request({
             method: 'POST',
-            url: '/api/chat',
+            url: url,
             data: {
                 message: message
             }
@@ -74,7 +77,7 @@ function ChatBotPage() {
                     chats?.map((item, index) => (
                         <ChatBubble message={
                             item?.message
-                        } isUser={item?.sender === "user" ? true : false} />
+                        } isUser={item?.sender === "user" ? true : false} isCaretaker={item?.sender === "caretaker" ? true : false} />
                     ))
                 }
             </div>
@@ -94,10 +97,10 @@ function ChatBotPage() {
     )
 }
 
-const ChatBubble = ({ message, isUser }) => {
+const ChatBubble = ({ message, isUser, isCaretaker }) => {
     return (
-        <div className={isUser ? 'flex justify-end' : 'flex justify-start'}>
-            <div className={isUser ? 'bg-[#65C9E3] text-black rounded-3xl px-4 py-3 mt-3' : 'bg-gray-200 text-black rounded-3xl px-4 py-3 mt-3'}>
+        <div className={isUser || isCaretaker ? 'flex justify-end' : 'flex justify-start'}>
+            <div className={isCaretaker ? "bg-red-500 text-black rounded-3xl px-4 py-3 mt-3" : isUser ? 'bg-[#65C9E3] text-black rounded-3xl px-4 py-3 mt-3' : 'bg-gray-200 text-black rounded-3xl px-4 py-3 mt-3'}>
                 {message}
             </div>
         </div>
