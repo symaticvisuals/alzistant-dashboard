@@ -9,4 +9,13 @@ const fetchAllReminders = async () => {
     return response.data.data;
 }
 
-export { fetchAllReminders };
+const fetchAllRemindersCaretaker = async () => {
+    const response = await request({
+        method: 'GET',
+        url: '/api/reminder/all'
+    })
+
+    return response.data.data;
+}
+
+export { fetchAllReminders, fetchAllRemindersCaretaker };

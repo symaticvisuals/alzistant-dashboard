@@ -1,15 +1,27 @@
 import moment from 'moment'
-import React from 'react'
+import React, { useContext } from 'react'
 import { CgRemoveR } from 'react-icons/cg'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import { request } from '../helpers/axios-instance'
+import { useLocation } from 'react-router-dom';
+import { PassedDataContext } from '../layout/main'
 
-
-function AddReminderPage() {
+function AddReminderPage({ item }) {
     const [timings, setTimings] = React.useState([''])
     const [reminder, setReminder] = React.useState({})
     const [payload, setPayload] = React.useState({})
     const history = useNavigate()
+    const { passedData, changePassedData } = useContext(PassedDataContext);
+
+    React.useEffect(() => {
+        if (passedData) {
+            console.log(passedData)
+            let item = passedData;
+            setReminder(item);
+            setTimings(item.timings);
+        }
+    }, [passedData]);
+
     const onChangeTiming = (e, index) => {
         const updatedTimings = [...timings];
         updatedTimings[index] = { time: e.target.value };
@@ -33,6 +45,26 @@ function AddReminderPage() {
         }
     }
 
+    const onEditReminder = async () => {
+        setPayload({ ...reminder, timings })
+        let response = await request({
+            method: 'PATCH',
+            url: `/api/reminder/${reminder._id}`,
+            data: { ...reminder, timings }
+        })
+
+        if (response.data.success) {
+            changePassedData(null)
+            history('/');
+        }
+        else {
+            alert('Something went wrong')
+        }
+
+
+    }
+
+
 
 
 
@@ -50,7 +82,7 @@ function AddReminderPage() {
                 <div className="">
                     <h2 className='text-md font-normal text-black'>Medicine Name</h2>
                     <input type="text" name="medicineName" className='border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1'
-                        placeholder='Paracetamol 121' onChange={handleChange} />
+                        placeholder='Paracetamol 121' onChange={handleChange} value={reminder?.medicineName ?? ""} />
                 </div>
                 <div className="">
                     <h2 className='text-md font-normal text-black'>Dose</h2>
@@ -59,7 +91,10 @@ function AddReminderPage() {
                             (e) => {
                                 setReminder({ ...reminder, quantity: e.target.value })
                             }
-                        }>
+                        }
+
+                        value={reminder?.quantity ?? ""}
+                    >
                         <option value="" disabled selected>Select Quantity</option>
                         <option value="0.5">1/2 Pill</option>
                         <option value="1">1 Pill</option>
@@ -69,7 +104,9 @@ function AddReminderPage() {
                 </div>
                 <div className="">
                     <h2 className='text-md font-normal text-black'>Frequency</h2>
-                    <select name="frequency" id="" className='
+                    <select name="frequency" id=""
+                        value={reminder?.frequency ?? ""}
+                        className='
                     border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1' onChange={handleChange}>
                         <option value="" disabled selected>Select Frequency</option>
                         <option value="daily">Daily</option>
@@ -80,6 +117,7 @@ function AddReminderPage() {
                 <div className="">
                     <h2 className='text-md font-normal text-black'>Start Date</h2>
                     <input type="date"
+                        value={reminder.startDate ? moment(reminder.startDate).format('YYYY-MM-DD') : ""}
                         name="startDate"
                         onChange={(e) => {
                             setReminder({ ...reminder, startDate: moment(e.target.value).format('YYYY-MM-DD') })
@@ -91,6 +129,7 @@ function AddReminderPage() {
                     <h2 className='text-md font-normal text-black'>End Date</h2>
                     <input type="date"
                         name="endDate"
+                        value={reminder.endDate ? moment(reminder.endDate).format('YYYY-MM-DD') : ""}
                         onChange={(e) => {
                             setReminder({ ...reminder, endDate: moment(e.target.value).format('YYYY-MM-DD') })
                         }}
@@ -110,6 +149,7 @@ function AddReminderPage() {
                                                 onChangeTiming(e, index)
                                             }
                                         }
+                                        value={timing.time}
                                         className='border-2 border-gray-800 rounded-2xl px-4 py-3 w-full focus:outline-none mt-1'
                                         placeholder='Paracetamol 121' />
                                     <button
@@ -131,8 +171,8 @@ function AddReminderPage() {
                 onClick={onAddTiming}
                 className='bg-white rounded-full px-5 py-2 text-slate-900 border-black border-2 flex  gap-2 mt-3'> + Add New Time</button>
             <button
-                onClick={onAddReminder}
-                className='bg-gray-800 rounded-xl px-5 py-4 w-full  justify-center text-white flex  gap-2 mt-3'> + Add Reminder</button>
+                onClick={passedData ? onEditReminder : onAddReminder}
+                className='bg-gray-800 rounded-xl px-5 py-4 w-full  justify-center text-white flex  gap-2 mt-3'>{!passedData ? " + Add Reminder" : "Update Reminder"}</button>
         </div>
     )
 }

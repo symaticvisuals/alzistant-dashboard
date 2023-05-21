@@ -2,8 +2,9 @@ import { Route, createBrowserRouter, createRoutesFromElements } from "react-rout
 import ProtectedRoutes from "./private";
 import { AuthLayout, MainLayout } from "../layout";
 import { AddPatient, AddReminderPage, CameraPage, ChatBotPage, ProfilePage, ReminderPage, SignIn, SignUp } from "../pages";
-import { Tomorrow, Today, LateReminder } from "../pages/reminder";
+import { Tomorrow, Today, LateReminder, AllReminders } from "../pages/reminder";
 import { GalleryPage } from "../pages/gallery";
+import AdminRenderer from "../components/user-conditional-renderer";
 
 
 export const router = createBrowserRouter(
@@ -12,12 +13,13 @@ export const router = createBrowserRouter(
             <Route path="/" element={<ProtectedRoutes />}>
                 <Route path="/" element={<MainLayout />} >
                     <Route path="/" element={<ReminderPage />} >
-                        <Route path="/" element={<Today />}></Route>
+                        <Route path="/" element={<AdminRenderer trueComponent={<AllReminders />} falseComponent={<Today />} />}></Route>
                         <Route path="/tomorrow" element={<Tomorrow />}></Route>
                         <Route path="/late-reminder" element={<LateReminder />} />
                     </Route>
 
                     <Route path="/add-reminder" element={<AddReminderPage />} />
+                    <Route path="/edit-reminder" element={<AddReminderPage />} />
                     <Route path="gallery" element={<GalleryPage />} />
                     <Route path="camera" element={<CameraPage />} />
                     <Route path="chat" element={<ChatBotPage />} />

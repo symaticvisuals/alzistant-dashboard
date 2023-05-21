@@ -1,14 +1,18 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { MdOutlineDone } from 'react-icons/md'
-import { Link, NavLink, Outlet, useOutletContext } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate, useOutletContext } from 'react-router-dom'
 import { IoCloseCircleSharp } from 'react-icons/io5'
 import { IoMdAdd } from 'react-icons/io'
-import { useReminders } from '../hooks/get-reminders'
+import { useReminders, useRemindersCaretaker } from '../hooks/get-reminders'
 import moment from 'moment'
 import { request } from '../helpers/axios-instance'
 import addNotification from 'react-push-notification';
 import Cookies from 'js-cookie'
 import AdminRenderer from '../components/user-conditional-renderer'
+import { RiDeleteBinLine } from 'react-icons/ri';
+import { AiFillEdit } from 'react-icons/ai';
+import { PassedDataContext } from '../layout/main'
+
 
 function ReminderPage() {
 
@@ -77,7 +81,7 @@ function ReminderPage() {
 
 
     return (
-        <div className='px-6 py-2 bg-[#FAFAFA] mb-14'>
+        <div className='px-6 py-2 bg-[#FAFAFA] mb-32'>
             <div className="py-2"></div>
             <h1 className='text-3xl font-semibold text-black'>
                 Pill Reminder
@@ -120,15 +124,19 @@ function ReminderPage() {
 
             </div>
             <div className=" flex gap-2 mt-3">
-                <NavLink to="/" className={({ isActive }) => isActive ? 'text-white p-1 rounded-full bg-black px-2 cursor-pointer' : 'text-black p-1 rounded-full px-2 cursor-pointer'} >
+                <AdminRenderer trueComponent={<NavLink to="/" className={({ isActive }) => isActive ? 'text-white p-1 rounded-full bg-black px-2 cursor-pointer' : 'text-black p-1 rounded-full px-2 cursor-pointer'} >
+                    <h3 className='' >Reminders</h3>
+                </NavLink>} falseComponent={<NavLink to="/" className={({ isActive }) => isActive ? 'text-white p-1 rounded-full bg-black px-2 cursor-pointer' : 'text-black p-1 rounded-full px-2 cursor-pointer'} >
                     <h3 className='' >Today</h3>
-                </NavLink>
-                <NavLink to="/tomorrow" className={({ isActive }) => isActive ? 'text-white p-1 rounded-full bg-black px-2 cursor-pointer' : 'text-black p-1 rounded-full px-2 cursor-pointer'} >
+                </NavLink>} />
+                <AdminRenderer trueComponent={null} falseComponent={<NavLink to="/tomorrow" className={({ isActive }) => isActive ? 'text-white p-1 rounded-full bg-black px-2 cursor-pointer' : 'text-black p-1 rounded-full px-2 cursor-pointer'} >
                     <h3 className='' >Tomorrow</h3>
-                </NavLink>
-                <NavLink to="/late-reminder" className={({ isActive }) => isActive ? 'text-white p-1 rounded-full bg-black px-2 cursor-pointer' : 'text-black p-1 rounded-full px-2 cursor-pointer'} >
+                </NavLink>} />
+
+                <AdminRenderer trueComponent={<NavLink to="/late-reminder" className={({ isActive }) => isActive ? 'text-white p-1 rounded-full bg-black px-2 cursor-pointer' : 'text-black p-1 rounded-full px-2 cursor-pointer'} >
                     <h3 className='' >Late Reminder</h3>
-                </NavLink>
+                </NavLink>} falseComponent={null} />
+
 
             </div>
             <Outlet context={[data]} />
@@ -217,6 +225,104 @@ const Today = () => {
     )
 }
 
+const AllReminders = () => {
+    const { data } = useRemindersCaretaker();
+    return (
+        <div className='flex flex-col gap-3 mt-3'>
+            {
+                data && data?.map((item, index) => (
+                    <AddedMedicineCard {...item} key={index} />
+                ))
+
+            }
+
+        </div>
+    )
+
+}
+
+
+const AddedMedicineCard = (item) => {
+
+    const { medicineName, quantity, timings, _id, startDate, endDate, frequency } = item;
+    const { passedData, changePassedData } = useContext(PassedDataContext);
+    const navigate = useNavigate();
+
+    const handleDelete = async () => {
+        // Handle delete functionality
+        // ask for confirmation before deleting the reminder
+        let confirmation = window.confirm("Are you sure you want to delete this reminder?");
+        if (confirmation) {
+            try {
+                await request({
+                    method: "DELETE",
+                    url: `/api/reminder/${_id}`
+                })
+                window.location.reload();
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
+
+    };
+
+    return (
+        <div className="bg-gray-100 px-4 py-4">
+            <div className="flex justify-between items-center">
+                <h1 className="text-xl font-bold mb-2">{medicineName}</h1>
+                <div className="flex justify-end gap-4 items-center">
+
+                    <button className="text-red-500 hover:text-red-700 cursor-pointer" onClick={handleDelete}>
+                        <RiDeleteBinLine size={20} />
+                    </button>
+                    <button
+                        onClick={
+                            () => {
+                                changePassedData(item);
+                                navigate("/edit-reminder");
+                            }
+                        }
+                        className="text-blue-500 hover:text-blue-700 cursor-pointer"
+                    >
+                        <AiFillEdit size={20} />
+                    </button>
+
+                </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+                <div className="flex items-center">
+                    <h2 className="text-sm">Quantity:</h2>
+                    <span className="ml-2">{quantity}</span>
+                </div>
+                <div className="flex items-center">
+                    <h2 className="text-sm">Frequency:</h2>
+                    <span className="ml-2">{frequency}</span>
+                </div>
+                <div className="flex items-center">
+                    <h2 className="text-sm">Start Date:</h2>
+                    <span className="ml-2">{moment(startDate).format('DD/MM/YYYY')}</span>
+                </div>
+                <div className="flex items-center">
+                    <h2 className="text-sm">End Date:</h2>
+                    <span className="ml-2">{moment(endDate).format('DD/MM/YYYY')}</span>
+                </div>
+            </div>
+
+            <div className="mt-4 flex gap-2">
+                {timings.map((item, index) => (
+                    <div key={index} className="flex items-center">
+                        <h2 className="px-2 py-1 text-sm font-semibold text-white bg-black rounded-lg">
+                            {moment(item.time, 'HH:mm').format('hh:mm A')}
+                        </h2>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
+
 
 const LateReminder = () => {
     const [data] = useOutletContext()
@@ -244,4 +350,4 @@ const LateReminder = () => {
 }
 
 
-export { ReminderPage, Tomorrow, Today, LateReminder }
+export { ReminderPage, Tomorrow, Today, LateReminder, AllReminders }
