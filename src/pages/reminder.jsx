@@ -141,6 +141,8 @@ const UpcomingReminder = ({ time, name, type = "" }) => {
     return (
         <div className="flex justify-between items-center px-4 py-4 bg-slate-100">
             <div className="">
+                <p>Medicine Name</p>
+                <h1 className="text-black text-xl mb-2 font-bold">{name}</h1>
                 <div className="flex gap-3">
 
                     {time.map((item, index) => (
@@ -152,9 +154,10 @@ const UpcomingReminder = ({ time, name, type = "" }) => {
                     )}
 
                 </div>
-                <h1 className="text-black text-xl mt-2">{name}</h1>
             </div>
-            <IoCloseCircleSharp className='text-3xl cursor-pointer  ' />
+
+            <AdminRenderer trueComponent={<IoCloseCircleSharp className='text-3xl cursor-pointer  ' />} falseComponent={null} />
+
 
         </div>
     )

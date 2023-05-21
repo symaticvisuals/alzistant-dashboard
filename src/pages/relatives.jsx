@@ -127,6 +127,8 @@ const AddRelativeForm = ({ image, showVerify }) => {
             data: formData,
         });
 
+        console.log(response.data);
+
         if (response.data.success) {
             setVerifiedDetails(response.data.data);
         } else {

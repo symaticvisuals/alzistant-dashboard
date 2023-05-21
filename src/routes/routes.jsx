@@ -1,7 +1,7 @@
 import { Route, createBrowserRouter, createRoutesFromElements } from "react-router-dom";
 import ProtectedRoutes from "./private";
 import { AuthLayout, MainLayout } from "../layout";
-import { AddPatient, AddReminderPage, CameraPage, ChatBotPage, ReminderPage, SignIn, SignUp } from "../pages";
+import { AddPatient, AddReminderPage, CameraPage, ChatBotPage, ProfilePage, ReminderPage, SignIn, SignUp } from "../pages";
 import { Tomorrow, Today, LateReminder } from "../pages/reminder";
 import { GalleryPage } from "../pages/gallery";
 
@@ -21,6 +21,8 @@ export const router = createBrowserRouter(
                     <Route path="gallery" element={<GalleryPage />} />
                     <Route path="camera" element={<CameraPage />} />
                     <Route path="chat" element={<ChatBotPage />} />
+                    <Route path="profile" element={<ProfilePage />} />
+                    <Route path="*" element={<div>404</div>} />
                 </Route>
                 <Route path="/add-patient" element={<AddPatient />} />
                 <Route path="*" element={<div>404</div>} />

@@ -6,12 +6,11 @@ import Cookies from 'js-cookie';
 import LoginGraphic from '../assets/login-vector.png'
 import { BsGoogle } from 'react-icons/bs';
 import { useNavigate } from 'react-router-dom';
-import { AccessTokenContext } from '../layout';
-import { request } from '../helpers/axios-instance';
+
 
 function SignIn() {
     const navigate = useNavigate()
-    const { setAccessToken } = useContext(AccessTokenContext);
+
     const authenticateUser = async (code) => {
         try {
             if (code.access_token) {
@@ -19,7 +18,8 @@ function SignIn() {
                     idToken: code.access_token,
                 });
                 if (response.data.data?.exists === false) {
-                    setAccessToken(code.access_token);
+                    console.log("User does not exist");
+                    Cookies.set("accessToken", code.access_token);
                     navigate('sign-up', { replace: false })
                     return;
                 }

@@ -7,6 +7,7 @@ import { FiCamera } from 'react-icons/fi'
 import { BsChatRightDots } from 'react-icons/bs'
 import { IoMdLogOut } from "react-icons/io";
 import Cookies from 'js-cookie'
+import { CgProfile } from 'react-icons/cg'
 
 function BottomNavigation() {
 
@@ -14,15 +15,11 @@ function BottomNavigation() {
 
     const tabs = [
         {
-            name: 'Reminders',
+            name: 'Pills',
             icon: <MdOutlineAccessAlarms className='text-2xl' />,
             route: '/'
         },
         {
-            name: 'Gallery',
-            icon: <RiGalleryLine className='text-2xl' />,
-            route: '/gallery'
-        }, {
             name: 'Camera', icon: <FiCamera className='text-2xl' />,
             route: '/camera'
 
@@ -30,6 +27,11 @@ function BottomNavigation() {
             name: 'Chat',
             icon: <BsChatRightDots className='text-2xl' />,
             route: '/chat'
+        }, {
+            name: 'Profile',
+            icon: <CgProfile className='text-2xl' />,
+            route: '/profile'
+
         }
     ]
 
@@ -43,19 +45,12 @@ function BottomNavigation() {
                         <NavLink to={tab.route} key={index} className={checkIsActive} >
                             {(
                                 { isActive }
-                            ) => (<Icon icon={tab.icon} isActive={isActive} />)}
+                            ) => (<Icon icon={tab.icon} isActive={isActive} name={tab.name} />)}
                         </NavLink>
                     ))
 
                 }
-                <div className="" onClick={() => {
-                    Cookies.remove('profile');
-                    Cookies.remove('token');
-                    navigate('/login', { replace: true })
-                }}>
 
-                    <Icon icon={<IoMdLogOut className='text-2xl' />} isActive={false} />
-                </div>
             </div>
         </div>
     )
@@ -64,13 +59,16 @@ function BottomNavigation() {
 export { BottomNavigation }
 
 
-const Icon = ({ icon, isActive }) => {
+const Icon = ({ icon, isActive, name }) => {
     return (
-        <div className={isActive ? "flex justify-center items-center p-4 rounded-full bg-black text-white" : "flex justify-center items-center p-4"}>
+        <>
+            <div className={isActive ? "flex justify-center items-center p-4 rounded-full bg-black text-white" : "flex justify-center items-center p-4"}>
 
-            <div className=''>
-                {icon}
+                <div className=''>
+                    {icon}
+                </div>
             </div>
-        </div>
+            <p className='text-sm text-center'>{name}</p>
+        </>
     )
 }

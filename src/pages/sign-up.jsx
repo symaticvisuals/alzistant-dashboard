@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { AccessTokenContext } from '../layout'
 import ContactGraphic from '../assets/contact-vector.png'
 import axios from 'axios';
 import { getApiURL } from '../helpers/baseURL';
@@ -8,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { request } from '../helpers/axios-instance';
 function SignUp() {
-  const { accessToken } = useContext(AccessTokenContext);
+  const access_token = Cookies.get('accessToken');
   const [mobile, setMobile] = useState('');
   const [otp, setOtp] = useState('');
   const navigate = useNavigate();
@@ -31,10 +30,10 @@ function SignUp() {
   }
 
   useEffect(() => {
-    if (!accessToken) {
+    if (!access_token) {
       navigate('/login', { replace: true });
     }
-  }, accessToken)
+  }, access_token)
 
   const verifyOtp = async () => {
 
@@ -42,13 +41,14 @@ function SignUp() {
       axios.post(`${getApiURL()}/api/auth/verifyOtp`, {
         phoneNumber: mobile,
         otp: otp,
-        accessToken: accessToken
+        accessToken: access_token
       })
 
     if (response.data.success) {
       Cookies.set('token', response.data.data.token, { expires: 7 })
       Cookies.set('profile', JSON.stringify(response.data.data.profile), { expires: 7 })
       navigate('/add-patient', { replace: true });
+      Cookies.remove('accessToken');
     } else {
       alert('Error Verifying OTP');
     }
